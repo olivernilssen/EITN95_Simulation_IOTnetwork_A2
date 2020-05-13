@@ -30,13 +30,14 @@ public class SignalList{
 		newSignal.next = dummy;
 	}
 
-	public static void SendReportSignal(int type, Proc dest, double arrtime, int [] report){
+	public static void SendReportSignal(int type, Proc dest, double arrtime, int FromNode, int [] report){
 		Signal dummy, predummy;
 		Signal newSignal = new Signal();
 		newSignal.signalType = type;
 		newSignal.destination = dest;
 		newSignal.arrivalTime = arrtime;
 		newSignal.report = report;
+		newSignal.node = FromNode;
 		predummy = list;
 		dummy = list.next;
 		while ((dummy.arrivalTime < newSignal.arrivalTime) & (dummy != last)){

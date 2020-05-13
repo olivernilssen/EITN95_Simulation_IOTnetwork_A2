@@ -4,7 +4,8 @@ import java.util.*;
 
 //It inherits Proc so that we can use time and the signal names without dot notation 
 class Gen extends Proc{
-	//The random number generator is started:
+
+	// The random number generator is started:
 	public Random slump = new Random();
 	public Proc sendTo;  //Says to which process we want to send customers
 
@@ -39,10 +40,8 @@ class Gen extends Proc{
 			nodes[i] = new Node(i, xy[0], xy[1]);
 			nodes[i].gateway = gateway;
 			SignalList.SendBasicSignal(WAKEUP, nodes[i], time + getExpo(Tp));
-			System.out.println(nodes[i].getPosition());
+			// System.out.println(nodes[i].getPosition());
 		}
-
-		
 	}
 
 

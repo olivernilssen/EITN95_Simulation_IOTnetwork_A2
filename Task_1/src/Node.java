@@ -14,10 +14,6 @@ public class Node extends Proc {
         position = new Coords(x, y);
     }
 
-    public int getID(){
-        return this.id;
-    }
-
     public Coords getPosition(){
         return this.position;
     }
@@ -30,22 +26,15 @@ public class Node extends Proc {
 		switch (x.signalType){
 			case WAKEUP:{
                 if(transmission){
-                    SignalList.SendFeedbackSignal(FEEDBACK, nodes[transmissionID], time, false);
-                    SignalList.SendBasicSignal(SLEEP, this, time);
-                }else {
+                    transmissionValid = false;
+                    SignalList.SendFeedbackSignal(FEEDBACK, this, time, false);
+                } else {
                     transmission = true;
-                    transmissionID = this.id;
-                    SignalList.SendBasicSignal(SENDM, this, time + ts);
+                    transmissionID = id;
+                    int[] report = {reached, notReached};
+                    SignalList.SendReportSignal(MESSAGE, gateway, time + ts, id, report);
                 }
-			} break;
-
-			case SENDM:{
-                int[] report = {reached, notReached};
-                
-                SignalList.SendReportSignal(MESSAGE, nodes[GATEWAY], time, report);
-                SignalList.SendBasicSignal(SLEEP, this, time);	
             } break;
-
             case FEEDBACK:{
                 transmission = false;
                 transmissionID = 0;
@@ -56,11 +45,14 @@ public class Node extends Proc {
                 else {
                     notReached++;
                 }
-            }
-            
-            case SLEEP:{
+
                 SignalList.SendBasicSignal(WAKEUP, this, time + getExpo(Tp));
-            } break;
+            }
 		}
-	}
+    }
+
+    @Override
+    public String toString(){
+        return "" + id;
+    }
 }

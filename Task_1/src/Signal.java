@@ -11,4 +11,10 @@ class Signal{
 	public Signal next;
 	public boolean feedback;
 	public int[] report;
+	public int node;
+
+	@Override 
+	public String toString(){
+		return "Signaltype: " + signalType + " dest: " + destination;
+	}
 }
