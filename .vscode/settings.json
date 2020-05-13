@@ -1,0 +1,8 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "json-20190722.jar",
+        "Task_1/lib/json-20190722.jar",
+        "Task_1/lib/json-simple-1.1.jar"
+    ]
+}
