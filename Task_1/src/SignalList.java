@@ -30,7 +30,7 @@ public class SignalList{
 		newSignal.next = dummy;
 	}
 
-	public static void SendReportSignal(int type, Proc dest, double arrtime, int FromNode, int [] report){
+	public static void SendReportSignal(int type, Proc dest, double arrtime, int FromNode, int report){
 		Signal dummy, predummy;
 		Signal newSignal = new Signal();
 		newSignal.signalType = type;

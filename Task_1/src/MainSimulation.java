@@ -6,6 +6,8 @@ import java.text.DecimalFormat;
 //It inherits Proc so that we can use time and the signal names without dot notation
 public class MainSimulation extends Global{
 	static DecimalFormat df = new DecimalFormat("#.####");
+	public static configFile cnfile = new configFile("Task_1/config/config.properties", true); 
+	public static configFile cnfileSave = new configFile("Task_1/config/configSaved.properties", true); 
 
 	public static void main(String[] args) throws IOException {
 		// The signal list is started and actSignal is declaree. actSignal is the latest
@@ -14,27 +16,42 @@ public class MainSimulation extends Global{
 		Signal actSignal;
 		new SignalList();
 
+		n = Integer.parseInt(cnfile.props.getProperty("nodes"));
+		ts = Integer.parseInt(cnfile.props.getProperty("ts"));
+		Tp = Integer.parseInt(cnfile.props.getProperty("Tp"));
+		radius = Integer.parseInt(cnfile.props.getProperty("r"));
+		area = Integer.parseInt(cnfile.props.getProperty("area"));
+		
+		nodes = new Node[n+1];
+		positions = new Coords[n+1];
+
 		//initialize the generator and set values (this can also be done in the gen as 
 		//the values are now global)
 		Gen Generator = new Gen();
 		Gateway Gateway = new Gateway();
-		positions[0] = new Coords(area/2, area/2);
+		positions[0] = new Coords(0, area/2, area/2);
 		Generator.generateNodes(Gateway);
-
+		int N = 100000;
+		
 		// This is the main loop
-		while (time < 100000) {
+		while (time < N) {
 			actSignal = SignalList.FetchSignal();
 			time = actSignal.arrivalTime;
 			actSignal.destination.TreatSignal(actSignal);
 		}
 
+		cnfile.close();
+
 		double reachedM = Gateway.reached;
 		double noreachedM = Gateway.notReached;
-		double allM = Gateway.allMessages;
+		double allM = noreachedM+reachedM;
+		double arrivalR = allM/N;
+		double onlyRR = reachedM/N;
 
 		System.out.println("Reached: " + reachedM);
 		System.out.println("Not reached " + noreachedM);
-		System.out.println("Prob of not reaching: " + allM/noreachedM); //THIS IS WRONG
-		System.out.println("arrival rate " + reachedM/100000);
+		System.out.println("Prob of not reaching: " + noreachedM/allM); //THIS IS WRONG
+		System.out.println("arrival rate " + arrivalR + " or for only reached: " + onlyRR);
+		// System.out.println("Throughput " +  reachedM/allM);
 	}
 }

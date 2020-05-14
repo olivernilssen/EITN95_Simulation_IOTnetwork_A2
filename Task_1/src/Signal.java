@@ -10,7 +10,7 @@ class Signal{
 	public int signalType;
 	public Signal next;
 	public boolean feedback;
-	public int[] report;
+	public int report;
 	public int node;
 
 	@Override 

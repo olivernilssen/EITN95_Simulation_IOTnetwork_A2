@@ -9,9 +9,9 @@ public class Node extends Proc {
     public Proc gateway;
     public int reached = 0, notReached = 0;
 
-    public Node (int id, int x, int y){
+    public Node (int id, Coords xy){
         this.id = id;
-        position = new Coords(x, y);
+        position = xy;
     }
 
     public Coords getPosition(){
@@ -25,28 +25,36 @@ public class Node extends Proc {
     public void TreatSignal(Signal x){
 		switch (x.signalType){
 			case WAKEUP:{
-                if(transmission){
-                    transmissionValid = false;
-                    SignalList.SendFeedbackSignal(FEEDBACK, this, time, false);
-                } else {
-                    transmission = true;
-                    transmissionID = id;
-                    int[] report = {reached, notReached};
-                    SignalList.SendReportSignal(MESSAGE, gateway, time + ts, id, report);
+                if (sentTime == time + Tp){
+                    SignalList.SendFeedbackSignal(FEEDBACK, this, time, false); //send feedback to self
                 }
+                else {
+                    int report = notReached;
+                    sentTime = time + Tp;
+                    SignalList.SendReportSignal(MESSAGE, gateway, time + Tp, id, report);
+                }
+                // if(transmission){
+                //     transmissionValid = false; //tell gateway that the transmission failed
+                //     SignalList.SendFeedbackSignal(FEEDBACK, this, time, false); //send feedback to self
+                // } else {
+                //     transmission = true; //tell system that transmission is in progress
+                //     transmissionID = id; //set ID of the current transmitter
+                //     int report = notReached; //Send report with how many transmissions didn't reach 
+                //     SignalList.SendReportSignal(MESSAGE, gateway, time + Tp, id, report);
+                // }
             } break;
             case FEEDBACK:{
                 transmission = false;
                 transmissionID = 0;
 
-                if (x.feedback){
-                    reached++;
+                if(x.feedback) {
+                    notReached = 0;
                 }
-                else {
+                else{
                     notReached++;
                 }
 
-                SignalList.SendBasicSignal(WAKEUP, this, time + getExpo(Tp));
+                SignalList.SendBasicSignal(WAKEUP, this, time + getExpo(ts));
             }
 		}
     }

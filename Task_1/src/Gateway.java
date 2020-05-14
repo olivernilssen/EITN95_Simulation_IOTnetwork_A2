@@ -4,7 +4,8 @@ package Task_1.src;
 
 public class Gateway extends Proc {
 
-  public Coords gatewayPos = new Coords(0, 0);
+  public Coords gatewayPos = new Coords(0, area/2, area/2);
+  public SimpleFileWriter writer = new SimpleFileWriter("Task_1/src/matlab/arrivals.m", false); 
   // private Random slump = new Random();
   public double allMessages = 0, notReached = 0, reached = 0, total = 0;
 
@@ -12,16 +13,15 @@ public class Gateway extends Proc {
     switch (x.signalType){
       case MESSAGE: {
 
+        //check if the transmission is valid (AKA. That there were no collisions)
         if(transmissionValid){    
-          reached += x.report[0];
-          notReached += x.report[1];
-          total += reached + notReached;
-          allMessages++;
+          reached ++; //count how many reached
+          notReached += x.report;
         }
 
         SignalList.SendFeedbackSignal(FEEDBACK, nodes[x.node], time, transmissionValid);
         transmissionValid = true;
-         
+        
       } break;
     }
   }
