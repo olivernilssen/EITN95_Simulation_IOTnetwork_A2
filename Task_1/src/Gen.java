@@ -4,24 +4,23 @@ import java.util.*;
 
 //It inherits Proc so that we can use time and the signal names without dot notation 
 class Gen extends Proc{
-	// The random number generator is started:
+	//The random number generator is started:
 	public Random slump = new Random();
-	public Proc sendTo;  //Says to which process we want to send customers
 
-	public Coords getCoordinates(int id){
+	public Coords getCoordinates(int id) {
 		int x = slump.nextInt(area);
 		int y = slump.nextInt(area);
-		Coords xy = new Coords(x, y, id);
+		Coords xy = new Coords(id, x, y);
 		return xy;
 	}
 
-	private boolean binarySearch (Coords[] arr, int l, int r, Coords c){
+	private int binarySearch (Coords[] arr, int l, int r, Coords c) {
 		if (r > l){
 				
 			int mid = l + (r - l)/2;
 	
 			if (arr[mid].x == c.x && arr[mid].y == c.y){
-				return true;
+				return mid;
 			
 			// # If element is smaller than mid, then it 
 			// # can only be present in left subarray
@@ -35,13 +34,11 @@ class Gen extends Proc{
 			}
 		}
 		else{
-			return false;
+			return -1;
 		}
 	}
 
-
-	static boolean insertSorted(Coords arr[], int n, Coords key, int capacity) 
-    { 
+	static boolean insertSorted(Coords arr[], int n, Coords key, int capacity) { 
         // Cannot insert more elements if n is already 
         // more than or equal to capcity 
         if (n >= capacity) 
@@ -54,33 +51,52 @@ class Gen extends Proc{
         arr[i + 1] = key; 
   
         return true; 
-    } 
+    }
 
-	public void generateNodes(Proc gateway){
-		for (int i = 1; i < n; i++){
+	public void generateNodes(Proc gateway) {
+		for (int i = 1; i < n+1; i++){
 			Coords xy = getCoordinates(i);
 			
-			while (binarySearch(positions, 0, i, xy)){
+			while (binarySearch(positions, 0, i, xy) != -1){
 				xy = getCoordinates(i);
 			}
 
-			insertSorted(positions, i, xy, n);
+			insertSorted(positions, i, xy, n + 1);
 			nodes[i] = new Node(i, xy);
 			nodes[i].gateway = gateway;
-			SignalList.SendBasicSignal(WAKEUP, nodes[i], time + getExpo(Tp));
-			// System.out.println(nodes[i].getPosition());
-			// MainSimulation.cnfileSave.storeProps("allCords", positions[i].toString());
+			SignalList.SendBasicSignal(WAKEUP, nodes[i], time + getExpo(ts));
 		}
-		System.out.println("Array done");
+		// System.out.println("Array done");
 		// for(Coords c : positions){
 		// 	System.out.print("[" + c + "] ");
 		// }
+		findNearestPs();
 	}
 
+	public void findNearestPs(){
+		int r = radius;
+		int i = 1;
+		double rPoint = r * r;
 
-	public double arrival(double L) {
-		double random = slump.nextDouble()*(L*2); //lower-bound being 0 and upperbound being L*2
-		return (random);
+		for (Node c : nodes){
+			if(c == null){ continue; } //the first one is null, because then i == id (i as in iteration)
+			Coords node_c = c.getPosition();
+
+			double h = node_c.x;
+			double k = node_c.y;
+			int j = 0;
+			for (Coords p : positions){
+				if(p.id == 0) { continue; } //skip the gateway
+				if(p.id == node_c.id) { continue; } //skip itself 
+				double checkR = Math.pow((p.x - h), 2) + Math.pow((p.y - k), 2);
+				if(checkR < rPoint){
+					allNearest[i][j] = p.id;
+					j++;
+				}
+			}
+			i++;
+		}
+		System.out.println("Points done");
 	}
 
 	private double getExpo(double lambda) {
@@ -88,7 +104,7 @@ class Gen extends Proc{
 	}
 
 	//What to do when a signal arrives
-	public void TreatSignal(Signal x){
+	public void TreatSignal(Signal x) {
 		
 	}
 }
