@@ -30,7 +30,7 @@ public class Node extends Proc {
     public void TreatSignal(Signal x){
 		switch (x.signalType){
 			case WAKEUP:{
-                if(strategy == 2 && checkNeighbours()){
+                if(strategy == 2 && isNeighbourTransmitting()){
                     SignalList.SendBasicSignal(WAKEUP, this, time + getUniform(3, 1));
                 }
                 else if(gatewayRecieving) {
@@ -61,9 +61,11 @@ public class Node extends Proc {
 		}
     }
 
+    //this code is really bad. it uses too much memory
+    //trying a different method
     public boolean checkNeighbours(){
         for (int i = 1; i < n; i++){
-            int id = allNearest[this.id][i];
+            //int id = allNearest[this.id][i];
             if(id == 0){ 
                 return false;
             }
@@ -72,6 +74,15 @@ public class Node extends Proc {
             }
         }
         return false;
+    }
+
+    public boolean isNeighbourTransmitting(){
+        boolean isNeighbour = false;
+        if(gatewayRecieving)
+        {
+            isNeighbour = allNearest.get(this.id).get(transmissionID) != null;
+        }
+        return isNeighbour;
     }
 
     @Override

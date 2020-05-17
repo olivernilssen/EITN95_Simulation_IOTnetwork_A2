@@ -26,7 +26,6 @@ public class MainSimulation extends Global{
 		
 		nodes = new Node[n+1];
 		positions = new Coords[n+1];
-		allNearest = new int[n+1][n];
 
 		//initialize the generator and set values (this can also be done in the gen as 
 		//the values are now global)

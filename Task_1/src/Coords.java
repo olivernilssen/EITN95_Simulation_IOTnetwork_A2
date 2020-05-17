@@ -3,7 +3,7 @@ package Task_1.src;
 import java.util.Comparator;
 
 public class Coords implements Comparator<Coords> {
-    int id;
+    Integer id;
     int x;
     int y;
 

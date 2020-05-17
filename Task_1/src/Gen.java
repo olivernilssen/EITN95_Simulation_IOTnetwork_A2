@@ -66,7 +66,7 @@ class Gen extends Proc{
 			nodes[i].gateway = gateway;
 			SignalList.SendBasicSignal(WAKEUP, nodes[i], time + getExpo(ts));
 		}
-		// System.out.println("Array done");
+		System.out.println("Array done");
 		// for(Coords c : positions){
 		// 	System.out.print("[" + c + "] ");
 		// }
@@ -75,7 +75,6 @@ class Gen extends Proc{
 
 	public void findNearestPs(){
 		int r = radius;
-		int i = 1;
 		double rPoint = r * r;
 
 		for (Node c : nodes){
@@ -84,17 +83,19 @@ class Gen extends Proc{
 
 			double h = node_c.x;
 			double k = node_c.y;
-			int j = 0;
+			Map <Integer, Integer> x = new HashMap<>();
 			for (Coords p : positions){
 				if(p.id == 0) { continue; } //skip the gateway
 				if(p.id == node_c.id) { continue; } //skip itself 
+				if(p.x < node_c.x + radius){ continue; }
+				if(p.x > node_c.x + radius) { return; }
 				double checkR = Math.pow((p.x - h), 2) + Math.pow((p.y - k), 2);
 				if(checkR < rPoint){
-					allNearest[i][j] = p.id;
-					j++;
+					x.put(p.id, p.id);
 				}
 			}
-			i++;
+
+			allNearest.put(node_c.id, x);
 		}
 		System.out.println("Points done");
 	}
