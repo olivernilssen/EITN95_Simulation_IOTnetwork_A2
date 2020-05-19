@@ -1,21 +1,23 @@
 
 package Task_1.src;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Global {
-	public static final int  WAKEUP = 1, PREPMESSAGE = 2, MESSAGE = 3, FEEDBACK = 4;
-	public static int n, ts, Tp, area, radius, strategy; //stored in config file
+	//Global final variables
+	public static final int  GATEWAY = 0, WAKEUP = 1, PREPMESSAGE = 2, MESSAGE = 3, FEEDBACK = 4;
 	public static double time = 0;
-	public static int X = 0, Y = 1;
+	public static final int X = 0, Y = 1;
+
+	//variables that will be filled once read from the config file
+	public static int n, ts, Tp, area, radius, strategy, min_wait, max_wait; //stored in config file
+	public static String node_placement, node_interval; 
+
+	//arrays that will be filled once info from config has been filled
 	public static Node [] nodes;
 	public static Coords [] positions;
-	// public static int[][] allNearest;
-	public static int GATEWAY = 0; //gateway node
+	public static int [][] allNeighbours;
+
+	//variables to keep track of transmissions
 	public static boolean gatewayRecieving = false;
 	public static int transmissionID = 0;
-	public static boolean transmissionValid = true;
-	public static double sentTime = 0.0;
-	public static Map<Integer, Map<Integer, Integer>> allNearest = new HashMap<Integer, Map<Integer, Integer>>();
+	public static boolean transmissionValid = true; //false is transmission has failed, eg. a crash happend while sending
 }

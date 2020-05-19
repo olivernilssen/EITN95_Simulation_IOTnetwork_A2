@@ -23,9 +23,12 @@ public class MainSimulation extends Global{
 		radius = Integer.parseInt(cnfile.props.getProperty("r"));
 		area = Integer.parseInt(cnfile.props.getProperty("area"));
 		strategy = Integer.parseInt(cnfile.props.getProperty("strategy"));
+		min_wait = Integer.parseInt(cnfile.props.getProperty("min_wait_time"));
+		max_wait = Integer.parseInt(cnfile.props.getProperty("max_wait_time"));
 		
 		nodes = new Node[n+1];
 		positions = new Coords[n+1];
+		allNeighbours = new int[n+1][n+1];
 
 		//initialize the generator and set values (this can also be done in the gen as 
 		//the values are now global)
@@ -33,7 +36,7 @@ public class MainSimulation extends Global{
 		Gateway Gateway = new Gateway();
 		positions[0] = new Coords(0, area/2, area/2);
 		Generator.generateNodes(Gateway);
-		int N = 100000; //simulation time
+		int N = 200000; //simulation time
 		
 		// This is the main loop
 		while (time < N) {
@@ -51,11 +54,11 @@ public class MainSimulation extends Global{
 		double allM = noreachedM+reachedM;
 		double arrivalR = allM/N;
 		double onlyRR = reachedM/N;
+		double RR = reachedM/allM;
 
 		System.out.println("Reached: " + reachedM);
 		System.out.println("Not reached " + noreachedM);
 		System.out.println("Prob of not reaching: " + noreachedM/allM); //THIS IS WRONG
-		System.out.println("arrival rate " + arrivalR + " or for only reached: " + onlyRR);
-		System.out.println("Throughput " +  reachedM/allM);
+		System.out.println("arrival rate " + arrivalR + " /s or for only reached: " + onlyRR + " something " + RR);
 	}
 }

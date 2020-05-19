@@ -8,8 +8,8 @@ class Gen extends Proc{
 	public Random slump = new Random();
 
 	public Coords getCoordinates(int id) {
-		int x = slump.nextInt(area);
-		int y = slump.nextInt(area);
+		int x = slump.nextInt(area+1);
+		int y = slump.nextInt(area+1);
 		Coords xy = new Coords(id, x, y);
 		return xy;
 	}
@@ -54,6 +54,8 @@ class Gen extends Proc{
     }
 
 	public void generateNodes(Proc gateway) {
+		int r2 = radius*radius; //to find out of node is outside of reach of the gateway
+
 		for (int i = 1; i < n+1; i++){
 			Coords xy = getCoordinates(i);
 			
@@ -64,13 +66,19 @@ class Gen extends Proc{
 			insertSorted(positions, i, xy, n + 1);
 			nodes[i] = new Node(i, xy);
 			nodes[i].gateway = gateway;
+			double diff = Math.pow((xy.x - area/2), 2) + Math.pow((xy.y - area/2), 2);
+			if(diff > r2){
+				System.out.println("diff: " + diff + " r=" + r2);
+				continue; //skip the send signal process, as it will never reach anyway
+			}
+		
 			SignalList.SendBasicSignal(WAKEUP, nodes[i], time + getExpo(ts));
 		}
 		System.out.println("Array done");
 		// for(Coords c : positions){
 		// 	System.out.print("[" + c + "] ");
 		// }
-		findNearestPs();
+		if(strategy == 2) { findNearestPs(); } //only do this with strategy one otherwise no point
 	}
 
 	public void findNearestPs(){
@@ -79,23 +87,23 @@ class Gen extends Proc{
 
 		for (Node c : nodes){
 			if(c == null){ continue; } //the first one is null, because then i == id (i as in iteration)
-			Coords node_c = c.getPosition();
+			Coords node = c.getPosition();
+			int min = node.x - r; 
+			int max = node.x + r; 
+			double nx = node.x;
+			double ny = node.y;
 
-			double h = node_c.x;
-			double k = node_c.y;
-			Map <Integer, Integer> x = new HashMap<>();
 			for (Coords p : positions){
-				if(p.id == 0) { continue; } //skip the gateway
-				if(p.id == node_c.id) { continue; } //skip itself 
-				if(p.x < node_c.x + radius){ continue; }
-				if(p.x > node_c.x + radius) { return; }
-				double checkR = Math.pow((p.x - h), 2) + Math.pow((p.y - k), 2);
-				if(checkR < rPoint){
-					x.put(p.id, p.id);
+				if(p.id == 0 || p.id == node.id) { continue; } //skip the gateway
+				if(p.x < min){ continue; } //continue as long as x is too far away from radius
+				if(p.x > max){ break; } //there are no more after we reach an x coordinate outside the radius
+				double checkRadius = Math.pow((p.x - nx), 2) + Math.pow((p.y - ny), 2);
+
+				if(checkRadius <= rPoint){
+					allNeighbours[node.id][p.id] = p.id; //map the id number to the iteration number!
 				}
 			}
 
-			allNearest.put(node_c.id, x);
 		}
 		System.out.println("Points done");
 	}
