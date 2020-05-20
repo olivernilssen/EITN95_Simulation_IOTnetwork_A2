@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 
 //It inherits Proc so that we can use time and the signal names without dot notation
 public class MainSimulation extends Global{
-	static DecimalFormat df = new DecimalFormat("#.####");
+	static DecimalFormat df = new DecimalFormat("#.#####");
 	public static configFile cnfile = new configFile("Task_1/config/config.properties", true); 
 	public static configFile cnfileSave = new configFile("Task_1/config/configSaved.properties", true); 
 
@@ -36,13 +36,13 @@ public class MainSimulation extends Global{
 		Gateway Gateway = new Gateway();
 		positions[0] = new Coords(0, area/2, area/2);
 		Generator.generateNodes(Gateway);
-		int N = 200000; //simulation time
+		int N = 100000; //simulation time
 		
 		// This is the main loop
 		while (time < N) {
 			actSignal = SignalList.FetchSignal();
 			time = actSignal.arrivalTime;
-			// System.out.println(time + " " + actSignal);
+			//System.out.println(time + " " + actSignal);
 			actSignal.destination.TreatSignal(actSignal);
 		}
 
@@ -54,11 +54,12 @@ public class MainSimulation extends Global{
 		double allM = noreachedM+reachedM;
 		double arrivalR = allM/N;
 		double onlyRR = reachedM/N;
-		double RR = reachedM/allM;
+		double RofM = reachedM/allM;
 
 		System.out.println("Reached: " + reachedM);
 		System.out.println("Not reached " + noreachedM);
-		System.out.println("Prob of not reaching: " + noreachedM/allM); //THIS IS WRONG
-		System.out.println("arrival rate " + arrivalR + " /s or for only reached: " + onlyRR + " something " + RR);
+		System.out.println("arrival rate " + arrivalR );
+		System.out.println("Throughput " + onlyRR);
+		System.out.println("Prob of not reaching: " + df.format(noreachedM/allM));
 	}
 }

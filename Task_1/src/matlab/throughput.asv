@@ -9,9 +9,9 @@ t2 = [0.15635 0.20156 0.20188 0.18345 0.16123 0.13518 0.11107 0.09039 0.07209 0.
 p2 = [0.3646891507 0.571531822 0.6967038250 0.7771745071 0.8252514523 0.8590964998 0.8811360936 0.8955004739 0.9044684741 0.9108997201];
 
 %didn't send if any neighbouring nodes were sending
-t2checks = [0.19913 0.31908 0.38546 0.41687 0.43103 0.4272 0.41582 0.4156 0.38941 0.37097];
-p2bchecks = [0.12589 0.2124 0.30731 0.38103 0.43274 0.48218 0.51952 0.52916 0.55551 0.5742];
+t2better = [ 0.4272 0.41582 0.4156 0.38941 0.37097];
+p2better = [ 0.48218 0.51952 0.52916 0.55551 0.5742];
 
-plot (x, p, x, t,  'linewidth', 1.5)
-% plot (x, p2, x, t2, 'linewidth', 1)
-%plot (x, p, x, t, x, t2checks, x, p2bchecks, 'linewidth', 1)
+plot (x, p, x, p2, x, t, x, t2, x, t2better, x, p2better, 'linewidth', 1)
+plot (x, p, x, p2, x, t, x, t2, x, t2better, x, p2better, 'linewidth', 1)
+plot (x, p, x, p2, x, t, x, t2, x, t2better, x, p2better, 'linewidth', 1)

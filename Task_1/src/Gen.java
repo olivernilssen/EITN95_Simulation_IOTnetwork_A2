@@ -68,7 +68,6 @@ class Gen extends Proc{
 			nodes[i].gateway = gateway;
 			double diff = Math.pow((xy.x - area/2), 2) + Math.pow((xy.y - area/2), 2);
 			if(diff > r2){
-				System.out.println("diff: " + diff + " r=" + r2);
 				continue; //skip the send signal process, as it will never reach anyway
 			}
 		
