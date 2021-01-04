@@ -1,4 +1,4 @@
-# EITN95 - Assignment-2
+# EITN95 Simulation - Assignment-2
 Simulation course at Lund Tekniska Högskola
 
 These two assignments are both written in Java and then we have 
